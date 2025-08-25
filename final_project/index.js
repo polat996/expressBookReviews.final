@@ -12,9 +12,18 @@ app.use("/customer",session({secret:"fingerprint_customer",resave: true, saveUni
 
 app.use("/customer/auth/*", function auth(req,res,next){
 //Write the authenication mechanism here
+if (!req.session.authorization) {
+    return res.status(401).json({message: "Unauthorized"});
+  }
+  const token = req.session.authorization['accessToken'];
+  if (!token) {
+    return res.status(401).json({message: "Unauthorized"});
+  }
+  next();
+
 });
  
-const PORT =5000;
+const PORT =26260;
 
 app.use("/customer", customer_routes);
 app.use("/", genl_routes);
